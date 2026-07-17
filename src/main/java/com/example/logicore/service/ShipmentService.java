@@ -1,20 +1,25 @@
 package com.example.logicore.service;
 
 
+
 import com.example.logicore.dto.ShipmentRequestDTO;
 import com.example.logicore.dto.ShipmentResponseDTO;
 import com.example.logicore.entity.Client;
 import com.example.logicore.entity.Courier;
 import com.example.logicore.entity.Shipment;
+import com.example.logicore.entity.ShipmentStatusHistory;
 import com.example.logicore.repository.ClientRepository;
 import com.example.logicore.repository.CourierRepository;
+import com.example.logicore.repository.HistroyRepository;
 import com.example.logicore.repository.ShipmentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 
@@ -25,6 +30,7 @@ public class ShipmentService{
     private final ShipmentRepository shipmentRepository;
     private final CourierRepository courierRepository;
     private final ClientRepository clientRepository;
+    private final HistroyRepository histroyRepository;
 
     private ShipmentResponseDTO mapToDTO(Shipment shipment){
         ShipmentResponseDTO dto = new ShipmentResponseDTO();
@@ -78,11 +84,20 @@ public class ShipmentService{
         return mapToDTO(shipment);
 }
 
-    public ShipmentResponseDTO updateShipmentStatus(String trackingNumber , String newStatus){
+    public ShipmentResponseDTO updateShipmentStatus(String trackingNumber , String newStatus,String note){
         Shipment shipment = getShipmentEntity(trackingNumber);
+        
         shipment.setStatus(newStatus);
-        Shipment updateShipment = shipmentRepository.save(shipment);
-        return mapToDTO(updateShipment);
+        shipmentRepository.save(shipment);
+
+
+        ShipmentStatusHistory history = new ShipmentStatusHistory();
+        history.setShipment(shipment);
+        history.setStatus(newStatus);
+        history.setNotes(note);
+        histroyRepository.save(history);
+        
+        return mapToDTO(shipment);
     }
 
 
@@ -113,6 +128,15 @@ public class ShipmentService{
         shipmentRepository.save(shipment);
     }
 
+
+    public Page<ShipmentResponseDTO> getShipmentsByClientPhone(String phonenumber, Pageable pageable){
+        if (!clientRepository.existsByPhoneNumber(phonenumber)) {
+            throw new IllegalArgumentException("لا يوجد عميل مسجل بهذا الرقم: " + phonenumber);
+        }
+
+        return shipmentRepository.findByRecipientPhoneNumber(phonenumber, pageable)
+                .map(this::mapToDTO);
+    }
 
 
 }
