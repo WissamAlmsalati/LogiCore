@@ -16,9 +16,6 @@ public class Shipment{
     @Column(nullable = false ,unique = true)
     private String trackingNumber;
 
-    @Column(nullable = false)
-    private String  recipientName;
-
     private String status;
 
     private Double weight;
@@ -26,5 +23,9 @@ public class Shipment{
     @ManyToOne
     @JoinColumn(name = "courier_id")
     private Courier courier;
+
+    @ManyToOne
+    @JoinColumn(name = "Client_id", nullable = false)
+    private  Client recipient;
 
 }

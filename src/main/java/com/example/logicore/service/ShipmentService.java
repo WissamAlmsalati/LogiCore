@@ -3,8 +3,10 @@ package com.example.logicore.service;
 
 import com.example.logicore.dto.ShipmentRequestDTO;
 import com.example.logicore.dto.ShipmentResponseDTO;
+import com.example.logicore.entity.Client;
 import com.example.logicore.entity.Courier;
 import com.example.logicore.entity.Shipment;
+import com.example.logicore.repository.ClientRepository;
 import com.example.logicore.repository.CourierRepository;
 import com.example.logicore.repository.ShipmentRepository;
 import jakarta.transaction.Transactional;
@@ -19,14 +21,15 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ShipmentService{
-    private final ShipmentRepository shipmentRepository;
 
+    private final ShipmentRepository shipmentRepository;
     private final CourierRepository courierRepository;
+    private final ClientRepository clientRepository;
 
     private ShipmentResponseDTO mapToDTO(Shipment shipment){
         ShipmentResponseDTO dto = new ShipmentResponseDTO();
         dto.setTrackingNumber(shipment.getTrackingNumber());
-        dto.setRecipientName(shipment.getRecipientName());
+        dto.setRecipientName(shipment.getRecipient().getFirstName() + " " + shipment.getRecipient().getLastName());
         dto.setStatus(shipment.getStatus());
         return dto;
 
@@ -44,18 +47,20 @@ public class ShipmentService{
 
 
     public ShipmentResponseDTO createShipment(ShipmentRequestDTO requestDTO){
+        System.out.println("Searching for client with phone: " + requestDTO.getClientPhoneNumber());
+        Client client = clientRepository.findByPhoneNumber(requestDTO.getClientPhoneNumber())
+                .orElseThrow(() -> new IllegalArgumentException("المستلم غير مسجل في النظام، يرجى إضافة العميل أولاً!"));
 
         Shipment shipment = new Shipment();
-        shipment.setRecipientName(requestDTO.getRecipientName());
+        shipment.setRecipient(client);
         shipment.setWeight(requestDTO.getWeight());
+
 
         String generateTrackingNumber= "LOGI"+UUID.randomUUID().toString().substring(0,8).toUpperCase();
         shipment.setTrackingNumber(generateTrackingNumber);
         shipment.setStatus("Pending");
 
         Shipment saveShipment = shipmentRepository.save(shipment);
-
-
 
         return mapToDTO(saveShipment);
     }

@@ -93,6 +93,36 @@
       ]
     },
     {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Add Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/clients",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Wissam\",\n  \"lastName\": \"Almsalati\",\n  \"phoneNumber\": \"+21650123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/clients"
+          }
+        }
+      ]
+    },
+    {
       "name": "Couriers",
       "item": [
         {
