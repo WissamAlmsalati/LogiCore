@@ -1,16 +1,18 @@
 package com.example.logicore.controller;
 
+import com.example.logicore.dto.ApiResponse;
 import com.example.logicore.dto.ShipmentRequestDTO;
 import com.example.logicore.dto.ShipmentResponseDTO;
 import com.example.logicore.entity.Shipment;
 import com.example.logicore.service.ShipmentService;
-import jakarta.validation.Valid; // استيراد الـ Valid
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List; // استيراد الـ List
+import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/shipments")
@@ -49,12 +51,14 @@ public class ShipmentController {
 
 
     @PutMapping("/{trackingNumber}/assign/{courierId}")
-    public ResponseEntity<String> assignCourier(
+    public ResponseEntity<ApiResponse<Objects>> assignCourier(
             @PathVariable String trackingNumber,
             @PathVariable Long courierId
     ){
         shipmentService.assignShipmentToCourier(trackingNumber,courierId);
-        return ResponseEntity.ok("تم إسناد الشحنة بنجاح للمندوب!");
 
+
+        ApiResponse<Objects> response = new ApiResponse<>(true , "تم اسناد الشحنة للمندوب");
+        return ResponseEntity.ok(response);
     }
 }

@@ -4,5 +4,6 @@ import com.example.logicore.entity.Courier;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CourierRepository extends JpaRepository<Courier,Long> {
+    boolean existsByPhone(String phone);
 }
 

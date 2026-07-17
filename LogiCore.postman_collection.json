@@ -1,0 +1,118 @@
+{
+  "info": {
+    "name": "LogiCore API",
+    "description": "جميع endpoints الخاصة بمشروع LogiCore (Shipments + Couriers)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:9909"
+    },
+    {
+      "key": "trackingNumber",
+      "value": "TRK-123"
+    },
+    {
+      "key": "courierId",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Shipments",
+      "item": [
+        {
+          "name": "Create Shipment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/shipments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipientName\": \"Ahmed Ben Salah\",\n  \"weight\": 2.5\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Shipments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/shipments"
+          }
+        },
+        {
+          "name": "Get Shipment by Tracking Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/shipments/{{trackingNumber}}"
+          }
+        },
+        {
+          "name": "Update Shipment Status",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shipments/{{trackingNumber}}/status?status=DELIVERED",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shipments", "{{trackingNumber}}", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "DELIVERED",
+                  "description": "CREATED / IN_TRANSIT / DELIVERED ... حسب الـ enum عندك"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Shipments by Courier",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/shipments/courier/{{courierId}}"
+          }
+        },
+        {
+          "name": "Assign Courier to Shipment",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/shipments/{{trackingNumber}}/assign/{{courierId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Couriers",
+      "item": [
+        {
+          "name": "Add Courier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/api/Couriers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mohamed Trabelsi\",\n  \"phone\": \"+21620123456\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

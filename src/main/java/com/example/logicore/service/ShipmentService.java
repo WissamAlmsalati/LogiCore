@@ -91,8 +91,14 @@ public class ShipmentService{
 
     @Transactional
     public void assignShipmentToCourier(String trackingNumber, Long courierId){
+
         Shipment shipment = shipmentRepository.findByTrackingNumber(trackingNumber)
                 .orElseThrow(()->new IllegalArgumentException("الشحنة غير موجودة"));
+
+        if (shipment.getCourier() !=null){
+            throw new IllegalArgumentException("هذه الشحنة مسندة بالفعل");
+        }
+
 
         Courier courier = courierRepository.findById(courierId)
                 .orElseThrow(()->new IllegalArgumentException("المندوب غير موجود"));

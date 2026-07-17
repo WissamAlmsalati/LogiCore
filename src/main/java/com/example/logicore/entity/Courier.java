@@ -1,5 +1,6 @@
 package com.example.logicore.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,8 +17,10 @@ public class Courier {
 
     private String name;
 
+    @Column(unique = true,nullable = false)
     private String phone;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "courier", cascade = CascadeType.ALL)
     private List<Shipment> shipments = new ArrayList<>();
 }
