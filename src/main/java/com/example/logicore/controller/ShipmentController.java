@@ -67,8 +67,10 @@ public class ShipmentController {
 
     @GetMapping("/client/{phoneNumber}")
     public ResponseEntity<Page<ShipmentResponseDTO>> getShipmentsByClient(
-            @PathVariable String phoneNumber, 
+            @PathVariable String phoneNumber,
             @PageableDefault(size = 10, sort = "id") Pageable pageable) {
+
+        String cleanPhoneNumber = phoneNumber.replace(" ", "+");
 
         return ResponseEntity.ok(shipmentService.getShipmentsByClientPhone(phoneNumber, pageable));
     }
