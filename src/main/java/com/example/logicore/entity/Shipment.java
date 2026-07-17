@@ -23,4 +23,8 @@ public class Shipment{
 
     private Double weight;
 
+    @ManyToOne
+    @JoinColumn(name = "courier_id")
+    private Courier courier;
+
 }
