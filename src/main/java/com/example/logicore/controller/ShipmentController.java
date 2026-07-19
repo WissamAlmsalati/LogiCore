@@ -7,6 +7,7 @@ import com.example.logicore.entity.Shipment;
 import com.example.logicore.service.ShipmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -63,7 +64,6 @@ public class ShipmentController {
         ApiResponse<Objects> response = new ApiResponse<>(true , "تم اسناد الشحنة للمندوب");
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/client/{phoneNumber}")
     public ResponseEntity<Page<ShipmentResponseDTO>> getShipmentsByClient(
